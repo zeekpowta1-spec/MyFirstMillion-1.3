@@ -539,7 +539,7 @@ private fun AddTab(
                         value = customAddText,
                         onValueChange = onCustomAmount,
                         label = { Text("Інша сума") },
-                        suffix = if (showCurrency) ({ Text("₴") }) else null,
+                        suffix = null,
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.weight(1f)
@@ -754,7 +754,7 @@ private fun PathTab(
             onChange = if (contributionUnit == ContributionUnit.DAY) onDaily else onMonthly,
             label = if (contributionUnit == ContributionUnit.DAY) "Сума на день" else "Сума на місяць",
             modifier = Modifier.fillMaxWidth(),
-            showCurrency = true
+            showCurrency = false
         )
 
         Spacer(Modifier.height(4.dp))
@@ -1137,18 +1137,57 @@ private fun QuickAmountButton(
 }
 
 @Composable
+private fun UnitChoiceRow(
+    firstLabel: String,
+    secondLabel: String,
+    firstSelected: Boolean,
+    onFirst: () -> Unit,
+    onSecond: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(GoldPale, RoundedCornerShape(14.dp))
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Button(
+            onClick = onFirst,
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(11.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (firstSelected) Green else Color.Transparent,
+                contentColor = if (firstSelected) Color.White else Green
+            ),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+        ) { Text(firstLabel, fontWeight = FontWeight.Bold) }
+
+        Button(
+            onClick = onSecond,
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(11.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (!firstSelected) Green else Color.Transparent,
+                contentColor = if (!firstSelected) Color.White else Green
+            ),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+        ) { Text(secondLabel, fontWeight = FontWeight.Bold) }
+    }
+}
+
+@Composable
 private fun MoneyField(
     value: String,
     onChange: (String) -> Unit,
     label: String,
     modifier: Modifier,
-    showCurrency: Boolean = true
+    showCurrency: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
         label = { Text(label) },
-        suffix = if (showCurrency) ({ Text("₴") }) else null,
+        suffix = null,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         modifier = modifier
